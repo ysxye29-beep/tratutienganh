@@ -44,7 +44,7 @@ export const WordCard: React.FC<WordCardProps> = ({ data, isSaved, onToggleSave,
     try {
       await fetch(sheetsUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ type: 'Word', ...data }) });
       alert(`Đã đồng bộ!`);
-    } catch (e) { alert("Lỗi."); } finally { setIsSyncing(false); }
+    } catch (e) { alert("Lỗi đồng bộ."); } finally { setIsSyncing(false); }
   };
 
   const playAudio = () => {
@@ -76,7 +76,7 @@ export const WordCard: React.FC<WordCardProps> = ({ data, isSaved, onToggleSave,
       recorder.start();
       setIsRecording(true);
       setTimeout(() => { if (recorder.state === 'recording') stopRecording(); }, 3000);
-    } catch (err) { alert("Micro!"); }
+    } catch (err) { alert("Cần quyền Micro!"); }
   };
 
   const stopRecording = () => {
@@ -93,7 +93,7 @@ export const WordCard: React.FC<WordCardProps> = ({ data, isSaved, onToggleSave,
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 flex-wrap">
             <h1 className="text-xl sm:text-2xl font-black text-white leading-tight tracking-tight">{data.word}</h1>
-            <span className="text-[8px] font-mono text-yellow-300 bg-gray-950 px-1 py-0.5 rounded border border-gray-700">/{data.ipa}/</span>
+            <span className="text-[9px] font-mono text-yellow-300 bg-gray-900 px-1.5 py-0.5 rounded border border-gray-700">/{data.ipa}/</span>
           </div>
           <p className="text-base sm:text-lg text-emerald-400 font-bold mt-0.5 truncate leading-none">{data.meaning_vi}</p>
         </div>
@@ -106,12 +106,12 @@ export const WordCard: React.FC<WordCardProps> = ({ data, isSaved, onToggleSave,
       </div>
 
       <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
-        {/* Definition Anh-Anh - Compact */}
+        {/* Definition */}
         <div className="bg-gray-900/40 p-2.5 rounded-lg border border-gray-700/50">
            <ClickableText text={`"${data.definition_en}"`} onLookup={onLookup} className="text-[11px] sm:text-xs text-gray-400 italic font-medium leading-tight block" />
         </div>
 
-        {/* Thông tin cấu trúc từ - Grid Compact */}
+        {/* Cấu trúc từ */}
         <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
            <div className="flex flex-col gap-0.5 bg-gray-900/20 p-2 rounded-lg border border-gray-700/30">
              <span className="text-[7px] font-black text-gray-600 uppercase tracking-widest">Tách từ</span>
@@ -123,40 +123,33 @@ export const WordCard: React.FC<WordCardProps> = ({ data, isSaved, onToggleSave,
            </div>
         </div>
 
-        {/* Spelling Tip - If exists */}
-        {data.spelling_tip && (
-          <div className="text-[9px] sm:text-[10px] text-amber-300 italic bg-amber-950/10 p-2 rounded-lg border border-amber-500/10 leading-tight">
-            <ClickableText text={data.spelling_tip} onLookup={onLookup} />
-          </div>
-        )}
-
-        {/* Ví dụ thông minh - Shrink padding */}
+        {/* Ví dụ */}
         <div className="space-y-2">
-          <div className="bg-gray-900/50 p-2.5 rounded-lg border-l-2 border-emerald-500/60 shadow-md">
+          <div className="bg-gray-900/50 p-2.5 rounded-lg border-l-2 border-emerald-500/60">
             <span className="text-[7px] font-black text-gray-500 uppercase tracking-widest mb-0.5 block">Ví dụ (B1)</span>
-            <ClickableText text={data.example_en} onLookup={onLookup} className="text-xs sm:text-sm text-white font-bold block leading-tight mb-0.5" />
-            <p className="text-gray-400 text-[10px] sm:text-[11px] font-medium leading-none">→ {data.example_vi}</p>
+            <ClickableText text={data.example_en} onLookup={onLookup} className="text-xs text-white font-bold block leading-tight mb-0.5" />
+            <p className="text-gray-400 text-[10px] leading-none">→ {data.example_vi}</p>
           </div>
-          <div className="bg-gray-900/50 p-2.5 rounded-lg border-l-2 border-blue-500/60 shadow-md">
+          <div className="bg-gray-900/50 p-2.5 rounded-lg border-l-2 border-blue-500/60">
             <span className="text-[7px] font-black text-gray-500 uppercase tracking-widest mb-0.5 block">Ví dụ (B2)</span>
-            <ClickableText text={data.example_b2_en} onLookup={onLookup} className="text-xs sm:text-sm text-white font-bold block leading-tight mb-0.5" />
-            <p className="text-gray-400 text-[10px] sm:text-[11px] font-medium leading-none">→ {data.example_b2_vi}</p>
+            <ClickableText text={data.example_b2_en} onLookup={onLookup} className="text-xs text-white font-bold block leading-tight mb-0.5" />
+            <p className="text-gray-400 text-[10px] leading-none">→ {data.example_b2_vi}</p>
           </div>
         </div>
 
-        {/* Từ gốc & Ghi nhớ - Side by side */}
+        {/* Từ gốc & Mẹo nhớ */}
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-gray-750/30 p-2 rounded-lg border border-gray-700">
-            <span className="text-[7px] text-gray-500 font-black uppercase mb-0.5 block tracking-wider">Từ gốc</span>
-            <ClickableText text={data.root_word} onLookup={onLookup} className="text-[10px] text-emerald-400 font-extrabold leading-none" />
+            <span className="text-[7px] text-gray-500 font-black uppercase mb-0.5 block">Từ gốc</span>
+            <ClickableText text={data.root_word} onLookup={onLookup} className="text-[10px] text-emerald-400 font-extrabold" />
           </div>
           <div className="bg-gray-750/30 p-2 rounded-lg border border-gray-700">
-            <span className="text-[7px] text-gray-500 font-black uppercase mb-0.5 block tracking-wider">Mẹo nhớ</span>
-            <ClickableText text={data.mnemonic} onLookup={onLookup} className="text-[9px] text-gray-300 leading-tight italic line-clamp-2" />
+            <span className="text-[7px] text-gray-500 font-black uppercase mb-0.5 block">Mẹo nhớ</span>
+            <ClickableText text={data.mnemonic} onLookup={onLookup} className="text-[9px] text-gray-300 italic line-clamp-2" />
           </div>
         </div>
 
-        {/* Related Lists - Clearer labeling and colors */}
+        {/* Phân biệt Đồng nghĩa - Trái nghĩa */}
         <div className="pt-1 space-y-2">
           <div className="flex flex-col gap-1">
             <span className="text-[7px] font-black text-emerald-500 uppercase tracking-[0.2em] border-b border-emerald-500/10 pb-0.5 w-fit">Đồng nghĩa</span>
@@ -172,34 +165,22 @@ export const WordCard: React.FC<WordCardProps> = ({ data, isSaved, onToggleSave,
           <div className="flex flex-col gap-1">
             <span className="text-[7px] font-black text-red-400 uppercase tracking-[0.2em] border-b border-red-500/10 pb-0.5 w-fit">Trái nghĩa</span>
             <div className="flex flex-wrap gap-1">
-              {data.antonyms.length > 0 ? data.antonyms.map((s, idx) => (
+              {data.antonyms && data.antonyms.length > 0 ? data.antonyms.map((s, idx) => (
                 <button key={idx} onClick={() => onLookup?.(s.replace(/[.,]/g, "").trim())} className="px-1.5 py-0.5 bg-gray-900 border border-red-500/20 rounded text-[9px] text-red-400 hover:bg-red-500 hover:text-white transition-all font-bold">
                   {s}
                 </button>
-              )) : <span className="text-[8px] text-gray-700 italic px-1">N/A</span>}
+              )) : <span className="text-[8px] text-gray-700 italic px-1">Không có dữ liệu</span>}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <div className="flex flex-col gap-1">
-              <span className="text-[7px] font-black text-gray-600 uppercase tracking-[0.1em]">Họ từ</span>
-              <div className="flex flex-wrap gap-1">
-                {data.word_family.slice(0, 4).map((s, idx) => (
-                  <button key={idx} onClick={() => onLookup?.(s.replace(/[.,]/g, "").trim())} className="px-1.5 py-0.5 bg-gray-950 border border-gray-700 rounded text-[9px] text-gray-400">
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-[7px] font-black text-purple-400 uppercase tracking-[0.1em]">Collocations</span>
-              <div className="flex flex-wrap gap-1">
-                {data.collocations.slice(0, 2).map((s, idx) => (
-                  <span key={idx} className="text-[9px] text-purple-300 font-bold bg-purple-950/20 px-1.5 py-0.5 rounded border border-purple-500/10 whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
-                    {s.split(' ').map((word, wIdx) => <span key={wIdx} onClick={() => onLookup?.(word.replace(/[.,]/g, "").trim())} className="hover:underline">{word} </span>)}
-                  </span>
-                ))}
-              </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[7px] font-black text-purple-400 uppercase tracking-[0.1em]">Collocations</span>
+            <div className="flex flex-wrap gap-1">
+              {data.collocations.slice(0, 3).map((s, idx) => (
+                <span key={idx} className="text-[9px] text-purple-300 font-bold bg-purple-950/20 px-1.5 py-0.5 rounded border border-purple-500/10">
+                  {s.split(' ').map((word, wIdx) => <span key={wIdx} onClick={() => onLookup?.(word.replace(/[.,]/g, "").trim())} className="hover:underline">{word} </span>)}
+                </span>
+              ))}
             </div>
           </div>
         </div>

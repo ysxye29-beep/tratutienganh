@@ -208,7 +208,8 @@ const App: React.FC = () => {
         )}
 
         {currentView === 'flashcards' && (
-            <FlashcardPage words={savedWords} sentences={savedSentences} onSelectWord={setSelectedDetail} onSelectSentence={setSelectedDetail} onRemoveWord={(s) => setSavedWords(prev => prev.filter(w => w.word !== s))} onRemoveSentence={(s) => setSavedSentences(prev => prev.filter(item => item.sentence !== s))} onStartStudy={(type, mode) => { setStudyQueue([...savedWords, ...savedSentences].sort(() => Math.random() - 0.5)); setCurrentView('study'); }} onBackToSearch={() => setCurrentView('search')} sheetsUrl={sheetsUrl} onUpdateSheetsUrl={setSheetsUrl} />
+            // Added explicit typing (item: SentenceData) to correctly handle the filter callback and avoid type error
+            <FlashcardPage words={savedWords} sentences={savedSentences} onSelectWord={setSelectedDetail} onSelectSentence={setSelectedDetail} onRemoveWord={(s) => setSavedWords(prev => prev.filter(w => w.word !== s))} onRemoveSentence={(s) => setSavedSentences(prev => prev.filter((item: SentenceData) => item.sentence !== s))} onStartStudy={(type, mode) => { setStudyQueue([...savedWords, ...savedSentences].sort(() => Math.random() - 0.5)); setCurrentView('study'); }} onBackToSearch={() => setCurrentView('search')} sheetsUrl={sheetsUrl} onUpdateSheetsUrl={setSheetsUrl} />
         )}
       </main>
 

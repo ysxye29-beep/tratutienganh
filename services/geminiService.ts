@@ -2,8 +2,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { WordData, SentenceData, PronunciationFeedback } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const wordCache = new Map<string, WordData>();
 const sentenceCache = new Map<string, SentenceData>();
 
@@ -28,7 +26,7 @@ const wordSchema = {
     word_family: { type: Type.ARRAY, items: { type: Type.STRING } },
     collocations: { type: Type.ARRAY, items: { type: Type.STRING } },
   },
-  required: ["word", "meaning_vi", "definition_en", "ipa", "example_en", "example_vi", "root_word", "mnemonic"],
+  required: ["word", "meaning_vi", "definition_en", "ipa", "example_en", "example_vi", "root_word", "mnemonic", "synonyms", "antonyms"],
 };
 
 const sentenceSchema = {
@@ -68,20 +66,20 @@ export const lookupWord = async (input: string): Promise<WordData> => {
   const normalized = input.trim().toLowerCase();
   if (wordCache.has(normalized)) return wordCache.get(normalized)!;
 
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview", 
     contents: `Analyze this English/Vietnamese word: "${normalized}"`,
     config: {
       systemInstruction: `You are an ultra-fast bilingual dictionary.
       STRICT RULES:
-      1. If input is English (e.g. 'raw', 'exit'), DO NOT change it. The "word" field MUST be the same as input.
+      1. If input is English, "word" field MUST match input exactly.
       2. If input is Vietnamese, translate to the most precise English word first.
-      3. Split 'root_word' and 'mnemonic' into separate fields.
+      3. Distinguish clearly between synonyms and antonyms.
       4. Speed is top priority. JSON output only.`,
       responseMimeType: "application/json",
       responseSchema: wordSchema,
       temperature: 0,
-      thinkingConfig: { thinkingBudget: 0 },
     },
   });
   
@@ -94,6 +92,7 @@ export const lookupSentence = async (input: string): Promise<SentenceData> => {
   const normalized = input.trim();
   if (sentenceCache.has(normalized)) return sentenceCache.get(normalized)!;
 
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview", 
     contents: `Analyze sentence: "${normalized}"`,
@@ -105,7 +104,6 @@ export const lookupSentence = async (input: string): Promise<SentenceData> => {
       responseMimeType: "application/json",
       responseSchema: sentenceSchema,
       temperature: 0,
-      thinkingConfig: { thinkingBudget: 0 },
     },
   });
   
@@ -115,6 +113,7 @@ export const lookupSentence = async (input: string): Promise<SentenceData> => {
 };
 
 export const checkPronunciation = async (target: string, base64Audio: string, mimeType: string): Promise<PronunciationFeedback> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: {
@@ -128,7 +127,6 @@ export const checkPronunciation = async (target: string, base64Audio: string, mi
       responseMimeType: "application/json",
       responseSchema: pronunciationSchema,
       temperature: 0,
-      thinkingConfig: { thinkingBudget: 0 },
     }
   });
   return JSON.parse(response.text) as PronunciationFeedback;

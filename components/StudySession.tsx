@@ -305,7 +305,8 @@ export const StudySession: React.FC<StudySessionProps> = ({ words, onComplete, o
                             <div className="text-center"><h3 className="text-3xl font-bold text-emerald-400 mb-1">{currentWord.meaning_vi}</h3><p className="text-blue-300 italic text-sm">{currentWord.part_of_speech}</p></div>
                             <div className="space-y-2">
                                 <div className="bg-gray-900/50 p-3 rounded-xl border-l-4 border-emerald-500"><p className="text-white text-base">{currentWord.example_en}</p></div>
-                                <div className="bg-gray-900/50 p-3 rounded-xl border-l-4 border-yellow-500/50"><p className="text-gray-300 text-sm">{currentWord.root_word_mnemonic}</p></div>
+                                {/* Corrected property name from root_word_mnemonic to mnemonic */}
+                                <div className="bg-gray-900/50 p-3 rounded-xl border-l-4 border-yellow-500/50"><p className="text-gray-300 text-sm">{currentWord.mnemonic}</p></div>
                             </div>
                         </div>
                     </div>
