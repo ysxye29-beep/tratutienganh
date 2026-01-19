@@ -1,9 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+const root = document.getElementById("root");
 
-const App = () => {
-  return React.createElement("h1", null, "Hello GitHub Pages!");
-};
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(React.createElement(App));
+root.innerHTML = `
+  <div style="
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:28px;
+  ">
+    🎉 WEB ĐÃ CHẠY OK 🎉
+  </div>
+`;
